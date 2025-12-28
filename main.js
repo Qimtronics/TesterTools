@@ -6,7 +6,9 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 const path = require('path');
 
 let win;
-let atgPort, beaconPort;
+let atgPort = null;
+let beaconPort = null;
+
 
 function createWindow() {
   win = new BrowserWindow({
@@ -36,6 +38,14 @@ ipcMain.handle('connect-atg', (_, { path, baud }) => {
   return true;
 });
 
+ipcMain.handle('disconnect-atg', async () => {
+  if (atgPort?.isOpen) {
+    await new Promise(res => atgPort.close(res));
+    atgPort = null;
+  }
+  return true;
+});
+
 /* -------- BEACON SERIAL -------- */
 ipcMain.handle('connect-beacon', (_, { path, baud }) => {
   beaconPort = new SerialPort({ path, baudRate: baud });
@@ -45,6 +55,14 @@ ipcMain.handle('connect-beacon', (_, { path, baud }) => {
     win.webContents.send('beacon-data', line);
   });
 
+  return true;
+});
+
+ipcMain.handle('disconnect', async () => {
+  if (atgPort?.isOpen) {
+    await new Promise(res => atgPort.close(res));
+    atgPort = null;
+  }
   return true;
 });
 

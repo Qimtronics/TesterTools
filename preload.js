@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld('api', {
 
   connectATG: cfg => ipcRenderer.invoke('connect-atg', cfg),
   connectBeacon: cfg => ipcRenderer.invoke('connect-beacon', cfg),
+  disconnectATG: () => ipcRenderer.invoke('disconnect-atg'),
+  disconnectBeacon: () => ipcRenderer.invoke('disconnect-beacon'),
 
   onATGData: cb =>
     ipcRenderer.on('atg-data', (_, d) => cb(d)),
