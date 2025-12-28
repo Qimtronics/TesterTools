@@ -2,6 +2,7 @@ console.log('renderer.js loaded');
 
 let atgConnected = false;
 let beaconConnected = false;
+
 const atgBuffer = [];
 const beaconBuffer = [];
 const MAX_BUF = 20;
@@ -12,6 +13,9 @@ let labelConnBeacon = document.getElementById('beaconConn');
 let getLowerTestStatus = document.getElementById('lowSt');
 let getMiddleTestStatus = document.getElementById('midSt');
 let getUpperTestStatus = document.getElementById('upSt');
+
+let atgVal=null;
+let atgLow=null, atgMid=null, atgUp=null;
 
 function fifoPush(buf, text) {
   buf.push(text);
@@ -191,14 +195,17 @@ document.getElementById('checkValue').onclick=()=>{
       if(getSelecteTypeTest.value==='low' && (getLowerTestStatus.innerText='-')){
         getLowerTestStatus.className='status green'; 
         getLowerTestStatus.innerText='DONE';
+        atgLow=atgVal;
       }
       else if(getSelecteTypeTest.value==='mid' && (getMiddleTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE')){
         getMiddleTestStatus.className='status green'; 
         getMiddleTestStatus.innerText='DONE'; 
+        atgMid=atgVal;
       }
       else if(getSelecteTypeTest.value==='up' && (getUpperTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE') && (getMiddleTestStatus.innerText==='DONE')){
         getUpperTestStatus.className='status green';  
         getUpperTestStatus.innerText='DONE';
+        atgUp=atgVal;
       }
       else{
         hexResult.value='start from Lower Level';
@@ -222,10 +229,10 @@ document.getElementById('testData').onclick=()=>{
     el.className='status '+(ok?'green':'red');
     el.innerText=ok?'SUCCESS':'FAIL';
   });
-  const sel=document.querySelector('input[name=test]:checked')?.value;
-  if(sel==='low'){ atgLow=atgVal; lowSt.className='status green'; }
-  if(sel==='mid'){ atgMid=atgVal; midSt.className='status green'; }
-  if(sel==='up'){ atgUp=atgVal; upSt.className='status green'; }
+  // const sel=document.querySelector('input[name=test]:checked')?.value;
+  // if(sel==='low'){ atgLow=atgVal; lowSt.className='status green'; }
+  // if(sel==='mid'){ atgMid=atgVal; midSt.className='status green'; }
+  // if(sel==='up'){ atgUp=atgVal; upSt.className='status green'; }
   if(atgLow!==null && atgMid!==null && atgUp!==null){
     stSensor.className='status '+((atgLow<atgMid && atgMid<atgUp)?'green':'red');
     stSensor.innerText=(atgLow<atgMid && atgMid<atgUp)?'SUCCESS':'FAIL';
@@ -239,4 +246,13 @@ document.getElementById('ResetTest').onclick=()=>{
   getMiddleTestStatus.innerText='-';
   getUpperTestStatus.className='status gray'; 
   getUpperTestStatus.innerText='-';
+  atgLow = null;
+  atgMid = null;
+  atgUp = null;
+  stSensor.className='status gray'; 
+  stSensor.innerText='Status';
+  stComm.className='status gray'; 
+  stComm.innerText='Status';
+  stBeacon.className='status gray'; 
+  stBeacon.innerText='Status';
 };
