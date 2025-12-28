@@ -9,6 +9,10 @@ const MAX_BUF = 20;
 let labelConnATG = document.getElementById('atgConn');
 let labelConnBeacon = document.getElementById('beaconConn');
 
+let getLowerTestStatus = document.getElementById('lowSt');
+let getMiddleTestStatus = document.getElementById('midSt');
+let getUpperTestStatus = document.getElementById('upSt');
+
 function fifoPush(buf, text) {
   buf.push(text);
   if (buf.length > MAX_BUF) buf.shift();
@@ -170,4 +174,69 @@ disconnectBeacon.onclick = async () => {
 
   labelConnBeacon.className='status gray';
   labelConnBeacon.innerText='Data Stopped';
+};
+
+document.getElementById('checkValue').onclick=()=>{
+  userVal=parseInt(hexInput.value,16)/100;
+  const isValidHex = /^[0-9a-fA-F]+$/.test(hexInput.value);
+  
+  if (isValidHex) {
+    hexResult.value=userVal;
+
+    const getSelecteTypeTest = document.querySelector('input[name="testType"]:checked');
+    if(getSelecteTypeTest !== null){
+
+      console.log('Selected Test Type:', getSelecteTypeTest);
+
+      if(getSelecteTypeTest.value==='low' && (getLowerTestStatus.innerText='-')){
+        getLowerTestStatus.className='status green'; 
+        getLowerTestStatus.innerText='DONE';
+      }
+      else if(getSelecteTypeTest.value==='mid' && (getMiddleTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE')){
+        getMiddleTestStatus.className='status green'; 
+        getMiddleTestStatus.innerText='DONE'; 
+      }
+      else if(getSelecteTypeTest.value==='up' && (getUpperTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE') && (getMiddleTestStatus.innerText==='DONE')){
+        getUpperTestStatus.className='status green';  
+        getUpperTestStatus.innerText='DONE';
+      }
+      else{
+        hexResult.value='start from Lower Level';
+      }
+    }
+    else
+    {
+      console.log('No seelected Test Type:', getSelecteTypeTest);
+      hexResult.value='Select Test Type';
+    }
+  }
+  else {
+    hexResult.value='Invalid Hex';
+  }
+};
+
+document.getElementById('testData').onclick=()=>{
+  const ok=(atgVal===beaconVal && beaconVal===userVal);
+  ['stComm','stBeacon'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.className='status '+(ok?'green':'red');
+    el.innerText=ok?'SUCCESS':'FAIL';
+  });
+  const sel=document.querySelector('input[name=test]:checked')?.value;
+  if(sel==='low'){ atgLow=atgVal; lowSt.className='status green'; }
+  if(sel==='mid'){ atgMid=atgVal; midSt.className='status green'; }
+  if(sel==='up'){ atgUp=atgVal; upSt.className='status green'; }
+  if(atgLow!==null && atgMid!==null && atgUp!==null){
+    stSensor.className='status '+((atgLow<atgMid && atgMid<atgUp)?'green':'red');
+    stSensor.innerText=(atgLow<atgMid && atgMid<atgUp)?'SUCCESS':'FAIL';
+  }
+};
+
+document.getElementById('ResetTest').onclick=()=>{
+  getLowerTestStatus.className='status gray'; 
+  getLowerTestStatus.innerText='-';
+  getMiddleTestStatus.className='status gray'; 
+  getMiddleTestStatus.innerText='-';
+  getUpperTestStatus.className='status gray'; 
+  getUpperTestStatus.innerText='-';
 };

@@ -147,18 +147,22 @@ button.secondary { background: #475569; }
   </div>
 
   <div class="test-grid" style="margin-top:8px;">
-    <div class="test-box">Sensor Reading<br><div id="stSensor" class="status">Status</div></div>
-    <div class="test-box">Comm 485<br><div id="stComm" class="status">Status</div></div>
-    <div class="test-box">Beacon Tx<br><div id="stBeacon" class="status">Status</div></div>
+    <div class="test-box">Sensor Reading<br>
+    <div id="stSensor" class="status">Status</div></div>
+    <div class="test-box">Comm 485<br>
+    <div id="stComm" class="status">Status</div></div>
+    <div class="test-box">Beacon Tx<br>
+    <div id="stBeacon" class="status">Status</div></div>
   </div>
 
-  <div class="checkbox-row">
-    <label><input type="radio" name="test" value="low" /> Lower Test <span id="lowSt" class="status">-</span></label>
-    <label><input type="radio" name="test" value="mid" /> Middle Test <span id="midSt" class="status">-</span></label>
-    <label><input type="radio" name="test" value="up" /> Upper Test <span id="upSt" class="status">-</span></label>
-  </div>
+  <form id="checkbox-row">
+    <label><input type="radio" name="testType" value="low" /> Lower Level <span id="lowSt" class="status">-</span></label>
+    <label><input type="radio" name="testType" value="mid" /> Middle Level <span id="midSt" class="status">-</span></label>
+    <label><input type="radio" name="testType" value="up" /> Upper Level <span id="upSt" class="status">-</span></label>
+  </form>
 
   <button style="margin-top:8px;" id="testData">Test Data</button>
+  <button id="ResetTest">Reset Test</button>
 </div>
 
 <script src="renderer.js"></script>
