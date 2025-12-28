@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Dual Serial Monitor</title>
+<style>
+body {
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: monospace;
+  padding: 12px;
+}
+h1 { text-align: center; }
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.panel {
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 8px;
+  background: #020617;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+select {
+  background: #020617;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.terminal {
+  height: 260px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  background: black;
+  padding: 6px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<h1>Dual Serial Terminal</h1>
+
+<div class="container">
+
+  <div class="panel">
+    <span>COM Port</span>
+    <select id="portAtg"></select>
+    <select id="baudAtg">
+    <option>9600</option>
+    <option>115200</option>
+    </select>    
+    <button id="connectAtg">Connect ATG</button>
+    <button id="refreshBtn">Refresh Ports</button>
+    <div id="termAtg" class="terminal"></div>
+  </div>
+
+
+  <div class="panel">
+    <span>COM Port</span>
+    <select id="portBeacon"></select>
+    <select id="baudBeacon">
+    <option>9600</option>
+    <option>115200</option>
+    </select>      
+    <button id="connectBeacon">Connect Beacon</button>
+    <button id="refreshBtn">Refresh Ports</button>
+    <div id="termBeacon" class="terminal"></div>
+  </div>
+
+</div>
+
+<script src="renderer.js"></script>
