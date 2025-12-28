@@ -3,84 +3,166 @@
 <meta charset="UTF-8" />
 <title>Dual Serial Monitor</title>
 <style>
+:root {
+  --bg: #0f172a;
+  --panel: #020617;
+  --border: #1e293b;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --green: #16a34a;
+  --red: #dc2626;
+  --grey: #374151;
+  --blue: #2563eb;
+}
 body {
-  background: #0f172a;
-  color: #e5e7eb;
-  font-family: monospace;
+  margin: 0;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+h1 { text-align: center; margin-bottom: 12px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 12px;
 }
-h1 { text-align: center; }
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.panel {
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 8px;
-  background: #020617;
-}
-
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 6px;
-}
-
-select {
+.panel h2 { margin: 0 0 8px 0; font-size: 18px; }
+.row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+select, input {
   background: #020617;
   color: var(--text);
   border: 1px solid var(--border);
-}
-
-.terminal {
-  height: 260px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  background: black;
-  padding: 6px;
   border-radius: 4px;
+  padding: 4px 6px;
 }
+button {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+button.btn-disabled {
+  background: #374151;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+button.secondary { background: #475569; }
+.monitor {
+  height: 180px;
+  overflow: hidden;
+  background: #020617;
+  border: 1px solid var(--border);
+  padding: 6px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y:auto;
+  white-space: pre-wrap;
+}
+.status {
+  padding: 6px;
+  text-align: center;
+  border-radius: 4px;
+  margin-top: 6px;
+  background: var(--grey);
+}
+.status.green { background: var(--green); }
+.status.red { background: var(--red); }
+.bottom {
+  margin-top: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+.test-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.test-box { background:#020617; padding:6px; border:1px solid var(--border); border-radius:4px; }
+.checkbox-row { display:flex; gap:12px; margin-top:8px; }
 </style>
 </head>
 <body>
 
-<h1>Dual Serial Terminal</h1>
+<h1>Tester ATG - Beacon</h1>
 
-<div class="container">
-
+<div class="grid">
   <div class="panel">
-    <span>COM Port</span>
-    <select id="portAtg"></select>
-    <select id="baudAtg">
-    <option>9600</option>
-    <option>115200</option>
-    </select>    
+    <h2>Config Serial 1 (ATG)</h2>
+    <div class="row">
+      <span>COM Port</span>
+      <select id="portAtg"></select>
+      <select id="baudAtg">
+        <option>9600</option>
+        <option>115200</option>
+      </select>  
+    </div>  
     <button id="connectAtg">Connect ATG</button>
+    <button id="disconnectAtg" class="secondary" disabled>Disconnect ATG</button>
     <button id="refreshBtn">Refresh Ports</button>
-    <div id="termAtg" class="terminal"></div>
+    <div id="atgConn" class="status">No ATG Data</div>
+    <!--<div id="termAtg" class="terminal"></div>--->
   </div>
-
 
   <div class="panel">
-    <span>COM Port</span>
-    <select id="portBeacon"></select>
-    <select id="baudBeacon">
-    <option>9600</option>
-    <option>115200</option>
-    </select>      
+    <h2>Config Serial 2 (Beacon)</h2>
+    <div class="row">
+      <span>COM Port</span>
+      <select id="portBeacon"></select>
+      <select id="baudBeacon">
+        <option>9600</option>
+        <option>115200</option>
+      </select>      
+    </div>
     <button id="connectBeacon">Connect Beacon</button>
+    <button id="disconnectBeacon" class="secondary" disabled>Disconnect Beacon</button>
     <button id="refreshBtn">Refresh Ports</button>
-    <div id="termBeacon" class="terminal"></div>
+    <div id="beaconConn" class="status">No Beacon Data</div>
+    <!--<div id="termBeacon" class="terminal"></div>--->
+  </div>
+</div>
+
+<div class="grid" style="margin-top:16px;">
+  <div class="panel">
+    <h2>Monitoring 1 (ATG)</h2>
+    <div id="termAtg" class="monitor"></div>
+    <div class="row"><span>Parsed Voltage (V)</span><strong id="atgVolt" style="margin-top:16px;">-</strong></div>
   </div>
 
+  <div class="panel">
+    <h2>Monitoring 2 (Beacon)</h2>
+    <div id="termBeacon" class="monitor"></div>
+    <div class="row"><span>Parsed Voltage (V)</span><strong id="beaconVolt" style="margin-top:16px;">-</strong></div>
+  </div>
+</div>
+
+<div class="bottom">
+  <div class="row">
+    <span>Data Beacon (HEX)</span>
+    <input id="hexInput" />
+    <button id="checkValue">Check Value</button>
+    <input id="hexResult" readonly />
+  </div>
+
+  <div class="test-grid" style="margin-top:8px;">
+    <div class="test-box">Sensor Reading<br>
+    <div id="stSensor" class="status">Status</div></div>
+    <div class="test-box">Comm 485<br>
+    <div id="stComm" class="status">Status</div></div>
+    <div class="test-box">Beacon Tx<br>
+    <div id="stBeacon" class="status">Status</div></div>
+  </div>
+
+  <form id="checkbox-row">
+    <label><input type="radio" name="testType" value="low" /> Lower Level <span id="lowSt" class="status">-</span></label>
+    <label><input type="radio" name="testType" value="mid" /> Middle Level <span id="midSt" class="status">-</span></label>
+    <label><input type="radio" name="testType" value="up" /> Upper Level <span id="upSt" class="status">-</span></label>
+  </form>
+
+  <button style="margin-top:8px;" id="testData">Test Data</button>
+  <button id="ResetTest">Reset Test</button>
 </div>
 
 <script src="renderer.js"></script>
