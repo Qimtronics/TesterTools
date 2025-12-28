@@ -6,6 +6,9 @@ const atgBuffer = [];
 const beaconBuffer = [];
 const MAX_BUF = 20;
 
+let labelConnATG = document.getElementById('atgConn');
+let labelConnBeacon = document.getElementById('beaconConn');
+
 function fifoPush(buf, text) {
   buf.push(text);
   if (buf.length > MAX_BUF) buf.shift();
@@ -36,24 +39,25 @@ async function loadPorts() {
 }
 
 function parseBeacon(str){
-  if(!str.includes('Raw Volt|Percent..:')) 
+  if(!str.includes('Raw Volt|Percent		:')) 
   {
     console.log('Beacon parse failed for string:', str);
     return false;
   }
 
   console.log('Beacon parse OK for string:', str);
-  const m=str.match(/Raw Volt\|Percent\.\.:\s*(\d+)/);
+  const m=str.match(/Raw\s+Volt\|Percent.*?:\s*(\d+)/i);
 
   if(!m) 
   {
+    labelConnBeacon.innerText='Data Received';
     return false;
   }
 
   beaconVal=parseFloat(m[1])/100;
   document.getElementById('beaconVolt').innerText=beaconVal;
-  document.getElementById('beaconConn').className='status green';
-  document.getElementById('beaconConn').innerText='Data Parsed';
+  labelConnBeacon.className='status green';
+  labelConnBeacon.innerText='Data Parsed';
   return true;
 }
 
@@ -63,18 +67,18 @@ function parseAtg(str){
     return false;
   }
   
-  console.log('ATG parse OK for string:', str);
   const m=str.match(/\(Volt\)\s*([0-9.]+)/);
 
   if(!m) 
   {
+    labelConnATG.innerText='Data Received';
     return false;
   }
 
   atgVal=parseFloat(m[1]);
   document.getElementById('atgVolt').innerText=atgVal;
-  document.getElementById('atgConn').className='status green';
-  document.getElementById('atgConn').innerText='Data Parsed';
+  labelConnATG.className='status green';
+  labelConnATG.innerText='Data Parsed';
   return true;
 }
 
@@ -93,14 +97,14 @@ window.addEventListener('DOMContentLoaded', () => {
   window.api.onATGData(line => {
     //console.log('ATG:', line);
     fifoPush(atgBuffer, line.trim());
-    document.getElementById('atgConn').innerText='Data Received';
+    //labelConnATG.innerText='Data Received';
     parseAtg(line.trim());
     // parseAtg(line);
   });
 
   window.api.onBeaconData(line => {
     fifoPush(beaconBuffer, line.trim());
-    document.getElementById('beaconConn').innerText='Data Received';
+    //labelConnBeacon.innerText='Data Received';
     parseBeacon(line.trim());
     // parseBeacon(line);
   });
@@ -132,6 +136,9 @@ disconnectAtg.onclick = async () => {
   disconnectAtg.style.background = '#374151';
   connectAtg.disabled = false;
   connectAtg.style.background = 'var(--blue)';
+
+  labelConnATG.className='status gray';
+  labelConnATG.innerText='Data Stopped';
 };
 
 
@@ -160,4 +167,7 @@ disconnectBeacon.onclick = async () => {
   disconnectBeacon.style.background = '#374151';
   connectBeacon.disabled = false;
   connectBeacon.style.background = 'var(--blue)';
+
+  labelConnBeacon.className='status gray';
+  labelConnBeacon.innerText='Data Stopped';
 };

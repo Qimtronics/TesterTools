@@ -58,10 +58,10 @@ ipcMain.handle('connect-beacon', (_, { path, baud }) => {
   return true;
 });
 
-ipcMain.handle('disconnect', async () => {
-  if (atgPort?.isOpen) {
-    await new Promise(res => atgPort.close(res));
-    atgPort = null;
+ipcMain.handle('disconnect-beacon', async () => {
+  if (beaconPort?.isOpen) {
+    await new Promise(res => beaconPort.close(res));
+    beaconPort = null;
   }
   return true;
 });
