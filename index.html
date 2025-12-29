@@ -31,6 +31,7 @@ h1 { text-align: center; margin-bottom: 12px; }
 }
 .panel h2 { margin: 0 0 8px 0; font-size: 18px; }
 .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.rowInput { display: flex; justify-content: space-between; align-items: left; margin-bottom: 1px; }
 select, input {
   background: #020617;
   color: var(--text);
@@ -79,9 +80,9 @@ button.secondary { background: #475569; }
   border-radius: 8px;
   padding: 12px;
 }
-.test-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.test-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
 .test-box { background:#020617; padding:6px; border:1px solid var(--border); border-radius:4px; }
-.checkbox-row { display:flex; gap:12px; margin-top:8px; }
+.checkbox-row { display:flex; gap:12px; margin-top:8px;}
 </style>
 </head>
 <body>
@@ -139,11 +140,18 @@ button.secondary { background: #475569; }
 </div>
 
 <div class="bottom">
-  <div class="row">
+  <div class="rowInput" >
     <span>Data Beacon (HEX)</span>
     <input id="hexInput" />
     <button id="checkValue">Check Value</button>
     <input id="hexResult" readonly />
+  </div>
+
+  <div class="rowInput" style="margin-top:10px;">
+    <span>Pengukuran Tegangan</span>
+    <input id="MultimeterInput" />
+    <button id="checkGainOpAmp">Check Gain</button>
+    <input id="GainResult" readonly />
   </div>
 
   <div class="test-grid" style="margin-top:8px;">
@@ -153,9 +161,11 @@ button.secondary { background: #475569; }
     <div id="stComm" class="status">Status</div></div>
     <div class="test-box">Beacon Tx<br>
     <div id="stBeacon" class="status">Status</div></div>
+    <div class="test-box">IntegrasiData<br>
+    <div id="stDataIntegrasi" class="status">Status</div></div>    
   </div>
 
-  <form id="checkbox-row">
+  <form id="checkbox-row" style="margin-top:10px;">
     <label><input type="radio" name="testType" value="low" /> Lower Level <span id="lowSt" class="status">-</span></label>
     <label><input type="radio" name="testType" value="mid" /> Middle Level <span id="midSt" class="status">-</span></label>
     <label><input type="radio" name="testType" value="up" /> Upper Level <span id="upSt" class="status">-</span></label>
