@@ -14,6 +14,9 @@ let getLowerTestStatus = document.getElementById('lowSt');
 let getMiddleTestStatus = document.getElementById('midSt');
 let getUpperTestStatus = document.getElementById('upSt');
 
+let lowTest = 0;
+let midTest = 0;
+let topTest = 0;
 let atgVal=null;
 let atgLow=null, atgMid=null, atgUp=null;
 
@@ -181,10 +184,12 @@ disconnectBeacon.onclick = async () => {
 };
 
 document.getElementById('checkValue').onclick=()=>{
-  userVal=parseInt(hexInput.value,16)/100;
+  let rangeMin = 0;
+  let rangeMax = 0;
   const isValidHex = /^[0-9a-fA-F]+$/.test(hexInput.value);
   
   if (isValidHex) {
+    userVal=parseInt(hexInput.value,16)/100;
     hexResult.value=userVal;
 
     const getSelecteTypeTest = document.querySelector('input[name="testType"]:checked');
@@ -196,16 +201,40 @@ document.getElementById('checkValue').onclick=()=>{
         getLowerTestStatus.className='status green'; 
         getLowerTestStatus.innerText='DONE';
         atgLow=atgVal;
+
+        rangeMin = atgLow * 0.95;
+        rangeMax = atgLow * 1.05;
+
+        if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
+        {
+          lowTest = 1;
+        }
       }
       else if(getSelecteTypeTest.value==='mid' && (getMiddleTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE')){
         getMiddleTestStatus.className='status green'; 
         getMiddleTestStatus.innerText='DONE'; 
         atgMid=atgVal;
+
+        rangeMin = atgMid * 0.95;
+        rangeMax = atgMid * 1.05;
+
+        if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
+        {
+          midTest = 1;
+        }
       }
       else if(getSelecteTypeTest.value==='up' && (getUpperTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE') && (getMiddleTestStatus.innerText==='DONE')){
         getUpperTestStatus.className='status green';  
         getUpperTestStatus.innerText='DONE';
         atgUp=atgVal;
+
+        rangeMin = atgUp * 0.95;
+        rangeMax = atgUp * 1.05;
+
+        if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
+        {
+          topTest = 1;
+        }
       }
       else{
         hexResult.value='start from Lower Level';
@@ -223,7 +252,8 @@ document.getElementById('checkValue').onclick=()=>{
 };
 
 document.getElementById('testData').onclick=()=>{
-  const ok=(atgVal===beaconVal && beaconVal===userVal);
+  //const ok=(atgVal===beaconVal && beaconVal===userVal);
+  const ok=(lowTest===1 && midTest===1 && topTest===1);
   ['stComm','stBeacon'].forEach(id=>{
     const el=document.getElementById(id);
     el.className='status '+(ok?'green':'red');

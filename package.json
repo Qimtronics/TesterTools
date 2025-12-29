@@ -1,15 +1,33 @@
 {
   "name": "atg-beacon-tester",
   "version": "1.0.0",
+  "description": "My Electron tester tool",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-rebuild"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "serialport": "^13.0.0"
+  },
+  "devDependencies": {
+    "electron": "^26.2.0",
+    "electron-builder": "26.0.12"
+  },
+  "build": {
+    "appId": "com.example.testertools",
+    "productName": "TesterTools",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "directories": {
+      "output": "dist"
+    }
   }
 }
