@@ -202,8 +202,8 @@ document.getElementById('checkValue').onclick=()=>{
         getLowerTestStatus.innerText='DONE';
         atgLow=atgVal;
 
-        rangeMin = atgLow * 0.95;
-        rangeMax = atgLow * 1.05;
+        rangeMin = atgLow * 0.99;
+        rangeMax = atgLow * 1.01;
 
         if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
         {
@@ -215,8 +215,8 @@ document.getElementById('checkValue').onclick=()=>{
         getMiddleTestStatus.innerText='DONE'; 
         atgMid=atgVal;
 
-        rangeMin = atgMid * 0.95;
-        rangeMax = atgMid * 1.05;
+        rangeMin = atgMid * 0.99;
+        rangeMax = atgMid * 1.01;
 
         if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
         {
@@ -228,8 +228,8 @@ document.getElementById('checkValue').onclick=()=>{
         getUpperTestStatus.innerText='DONE';
         atgUp=atgVal;
 
-        rangeMin = atgUp * 0.95;
-        rangeMax = atgUp * 1.05;
+        rangeMin = atgUp * 0.99;
+        rangeMax = atgUp * 1.01;
 
         if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
         {
