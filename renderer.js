@@ -14,6 +14,8 @@ let getLowerTestStatus = document.getElementById('lowSt');
 let getMiddleTestStatus = document.getElementById('midSt');
 let getUpperTestStatus = document.getElementById('upSt');
 
+let Comm485Change = 0;
+let BLETransmitChange = 0;
 let lowTest = 0;
 let midTest = 0;
 let topTest = 0;
@@ -186,6 +188,8 @@ disconnectBeacon.onclick = async () => {
 document.getElementById('checkValue').onclick=()=>{
   let rangeMin = 0;
   let rangeMax = 0;
+  let rangeMinComm = 0;
+  let rangeMaxComm = 0;  
   const isValidHex = /^[0-9a-fA-F]+$/.test(hexInput.value);
   
   if (isValidHex) {
@@ -204,11 +208,25 @@ document.getElementById('checkValue').onclick=()=>{
 
         rangeMin = atgLow * 0.99;
         rangeMax = atgLow * 1.01;
+        rangeMinComm = atgLow * 0.90;
+        rangeMaxComm = atgLow * 1.1;
+
 
         if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
         {
           lowTest = 1;
         }
+
+        if((userVal >= rangeMinComm) && (userVal <= rangeMaxComm))
+        {
+          BLETransmitChange = 1;
+        }
+        
+        if((beaconVal >= rangeMinComm) && (beaconVal <= rangeMaxComm))
+        {
+          Comm485Change = 1;
+        }
+        
       }
       else if(getSelecteTypeTest.value==='mid' && (getMiddleTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE')){
         getMiddleTestStatus.className='status green'; 
@@ -217,10 +235,22 @@ document.getElementById('checkValue').onclick=()=>{
 
         rangeMin = atgMid * 0.99;
         rangeMax = atgMid * 1.01;
+        rangeMinComm = atgMid * 0.90;
+        rangeMaxComm = atgMid * 1.1;
 
         if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
         {
           midTest = 1;
+        }
+        
+        if((userVal >= rangeMinComm) && (userVal <= rangeMaxComm))
+        {
+          BLETransmitChange = 2;
+        }
+        
+        if((beaconVal >= rangeMinComm) && (beaconVal <= rangeMaxComm))
+        {
+          Comm485Change = 2;
         }
       }
       else if(getSelecteTypeTest.value==='up' && (getUpperTestStatus.innerText='-') && (getLowerTestStatus.innerText==='DONE') && (getMiddleTestStatus.innerText==='DONE')){
@@ -230,11 +260,25 @@ document.getElementById('checkValue').onclick=()=>{
 
         rangeMin = atgUp * 0.99;
         rangeMax = atgUp * 1.01;
+        rangeMinComm = atgUp * 0.90;
+        rangeMaxComm = atgUp * 1.1;
+
 
         if(((userVal >= rangeMin) && (userVal <= rangeMax)) && ((beaconVal >= rangeMin) && (beaconVal <= rangeMax)))
         {
           topTest = 1;
         }
+
+        if((userVal >= rangeMinComm) && (userVal <= rangeMaxComm))
+        {
+          BLETransmitChange = 3;
+        }
+        
+        if((beaconVal >= rangeMinComm) && (beaconVal <= rangeMaxComm))
+        {
+          Comm485Change = 3;
+        }
+
       }
       else{
         hexResult.value='start from Lower Level';
@@ -242,7 +286,7 @@ document.getElementById('checkValue').onclick=()=>{
     }
     else
     {
-      console.log('No seelected Test Type:', getSelecteTypeTest);
+      console.log('No selected Test Type:', getSelecteTypeTest);
       hexResult.value='Select Test Type';
     }
   }
@@ -253,16 +297,34 @@ document.getElementById('checkValue').onclick=()=>{
 
 document.getElementById('testData').onclick=()=>{
   //const ok=(atgVal===beaconVal && beaconVal===userVal);
-  const ok=(lowTest===1 && midTest===1 && topTest===1);
-  ['stComm','stBeacon'].forEach(id=>{
-    const el=document.getElementById(id);
+  let ok = 0;
+  const el = null;
+
+
+  ok = (lowTest===1 && midTest===1 && topTest===1);
+  if(ok)
+  {
+    el=document.getElementById('stDataIntegrasi');
     el.className='status '+(ok?'green':'red');
     el.innerText=ok?'SUCCESS':'FAIL';
-  });
-  // const sel=document.querySelector('input[name=test]:checked')?.value;
-  // if(sel==='low'){ atgLow=atgVal; lowSt.className='status green'; }
-  // if(sel==='mid'){ atgMid=atgVal; midSt.className='status green'; }
-  // if(sel==='up'){ atgUp=atgVal; upSt.className='status green'; }
+  }
+
+  ok = (Comm485Change === 3);
+  if(ok)
+  {
+    el=document.getElementById('stComm');
+    el.className='status '+(ok?'green':'red');
+    el.innerText=ok?'SUCCESS':'FAIL';
+  }
+
+  ok = (BLETransmitChange === 3);
+  if(ok)
+  {
+    el=document.getElementById('stBeacon');
+    el.className='status '+(ok?'green':'red');
+    el.innerText=ok?'SUCCESS':'FAIL';
+  }
+
   if(atgLow!==null && atgMid!==null && atgUp!==null){
     stSensor.className='status '+((atgLow<atgMid && atgMid<atgUp)?'green':'red');
     stSensor.innerText=(atgLow<atgMid && atgMid<atgUp)?'SUCCESS':'FAIL';
@@ -276,13 +338,22 @@ document.getElementById('ResetTest').onclick=()=>{
   getMiddleTestStatus.innerText='-';
   getUpperTestStatus.className='status gray'; 
   getUpperTestStatus.innerText='-';
-  atgLow = null;
-  atgMid = null;
-  atgUp = null;
+  atgLow = 0;
+  atgMid = 0;
+  atgUp = 0;
+  atgVal = 0;
+  beaconVal = 0;
   stSensor.className='status gray'; 
   stSensor.innerText='Status';
   stComm.className='status gray'; 
   stComm.innerText='Status';
   stBeacon.className='status gray'; 
   stBeacon.innerText='Status';
+  stDataIntegrasi.className='status gray'; 
+  stDataIntegrasi.innerText='Status';
+  Comm485Change = 0;
+  BLETransmitChange = 0;
+  lowTest = 0;
+  midTest = 0;
+  topTest = 0;
 };
