@@ -1,10 +1,16 @@
 ATG TESTER
 
-at first you must add serial module in node by
+at first you must add serial module in node by 
 
->git remote set-url origin git@github.>com:Qimtronics/TesterTools.git
+>git remote -V
+untuk memastikan git terhubung dengan repository a.n Qimtronics
 
 then
+install two dependecies which are desribed below 
 
->npm install serialport @serialport/>parser-readline
+>npm install electron
+>npm install serialport
 
+after install progress is finished then
+try to open the apps using .bat file: 
+> ATGTesterApp.bat
